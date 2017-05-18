@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加新blog</title>
+<script type="text/javascript" src="/test/js/jqurey.js"></script>
+    <link href="/test/css/add.css" rel="stylesheet" type="text/css">
+<script  type="text/javascript">
+    var date=null;
+    var date1=null;
+    var xmlhttp=null;
+    var name=null;
+
+    function GetQueryString(name)//查找参数内容
+    {
+    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if(r!=null)return decodeURIComponent(r[2]); return null;
+    }
+    function getCookie(c_name)  //取出cookie中值
+    {
+        if (document.cookie.length>0)
+        {
+            c_start=document.cookie.indexOf(c_name + "=");
+            if (c_start!=-1)
+            {
+                c_start=c_start + c_name.length+1;
+                c_end=document.cookie.indexOf(";",c_start);
+                if (c_end==-1)
+                    c_end=document.cookie.length;
+                return decodeURIComponent(document.cookie.substring(c_start,c_end))
+            }
+        }
+        return "";
+    }
+    function createXmlHttpRequest()
+    {
+        if(window.ActiveXObject)
+        {
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        else if(window.XMLHttpRequest)
+        {
+            xmlhttp=new XMLHttpRequest();
+        }
+    }
+    function send_request(){
+
+        //alert(getCookie('loadname'));
+        createXmlHttpRequest();
+        var title=document.getElementById("title").value;
+        var body=document.getElementById("body").value;
+        name=getCookie('loadname');
+        if(title=="")
+                alert("不能为空");
+        else {
+        var url="/test/blogindex/add.php?regdata="+date1+"&name="+name+"&title="+title+"&body="+body;
+        xmlhttp.onreadystatechange=processRequest;
+        xmlhttp.open("GET",url,true);
+        xmlhttp.send("null");}
+    }
+    function send() {
+        //alert(document.querySelectorAll("div1")[1].textContent);
+        alert($("#body").val());
+
+    }
+    function processRequest()
+    {
+        if (xmlhttp.readyState == 4)
+        {
+            if (xmlhttp.status == 200)
+            {
+                //var arr=xmlhttp.responseText;
+                //var contacts = JSON.parse(xmlhttp.responseText);
+                if (xmlhttp.responseText !=null )
+                {
+                    alert("新增成功");
+                    window.location.href = "/test/blogindex/index.html?name="+name;
+                }
+                else
+                {
+                    alert("新增失败！");
+                    return false;
+                }
+
+
+            }
+        }
+    }
+    function loadpa()
+    {
+            var date2 = new Date();
+            //var date="global";
+            var name=GetQueryString("name");
+            //date=date2.getFullYear() + "-" + date2.getMonth() + "-" + date2.getDate();
+            var month=date2.getMonth()+1;
+            date1 = date2.getFullYear()+"-"+month + "-" + date2.getDate();
+            var regdata = document.getElementById("regdata");
+            regdata.innerHTML = "regdata:" + date1;
+            var name1 = document.getElementById("name");
+            name1.innerHTML = "name:" + name;
+
+        //alert(getCookie('loadname'));
+
+    }
+    $(document).ready(function () {
+        //判断是否为登录用户改变导航栏
+        var name=getCookie('loadname');
+        if(name=="") {
+            $(".top-left").html("<a>请登录！</a>");
+            $(".top-right").html("");
+            $("#apDiv1").hide("fast");
+        }
+        $(".top-left").click(function () {
+           // if($(this).html()=="请登录！")
+                window.location.href='/test/login/login.html';
+
+        });
+        //登出模块
+        $("#login").click(function () {
+            $(".loginout").css("display","block");
+            // $(".loginout").show("fast");
+
+        });
+        $(".loginout>input").click(function () {
+            if($(this).attr("id")=="submit1")
+            {
+                //document.cookie{}
+                window.location.href='/test/login/login.html';
+            }
+            if($(this).attr("id")=="submit2")
+                $(".loginout").hide('fast');
+
+        })
+
+
+    })
+
+
+</script>
+<style type="text/css">
+
+</style>
+</head>
+<body  onLoad="loadpa()">
+<div class="top">
+    <div class="top-left">
+            <a href="/test/blogindex/blogindex.html">个人主页</a>
+            <a href="/test/blogindex/index.html">我的blog</a>
+            <a href="/test/blogindex/test.php">照片墙</a>
+            <a  id="login">登出</a>
+    </div>
+    <div class="top-right">
+        <a href="#" class="l-href">好友blog—站点</a>
+        <a href="#" class="l-href">好友blog-站点</a>
+        <a href="" class="l-href">联系我们</a>
+    </div>
+
+</div>
+<div class="index">
+<blockquote>
+      <span id="dis">New blog</span>
+    </blockquote>
+   <div class="loginout"><strong>确认登出？</strong><br>
+        <input type="submit" name="submit1" id="submit1" value="确认登出">
+        <input type="submit" name="submit2" id="submit2" value="取消">
+    </div>
+<div id="apDiv1">
+  <table width="200">
+    <tr>
+      <td width="50%" id="regdata"></td>
+      <td width="50%" id="name"></td>
+    </tr>
+  </table>
+  <div class="title"><span class="titl">主题：</span>
+    <label for="title"></label>
+  <input type="text" name="title" id="title"></div>
+  <div class="body"><label for="body"></label>
+  <textarea name="body" rows="20" id="body"></textarea></div>
+   <div class="submit"><input type="submit" name="submit" id="submit" value="提交" onclick="send_request()"></div>
+</div>
+    </div>
+</body>
+</html>

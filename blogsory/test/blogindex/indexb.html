@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>精华blog</title>
+    <link href="/test/css/indexb.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/test/js/jqurey.js"></script>
+    <script type="text/javascript" src="/test/js/function.js"></script>
+    <script>
+     var name=getCookie('loadname');
+     $(document).ready(function () {
+         if(name!="")
+                 $.get("/test/blogindex/allsql.php",function (data,textstatus) {
+                     var len=data.length;
+                     var mybody = document.getElementById("tr1");
+                     for(var i=0;i<len;i++)
+                     {
+                         var mytr = document.createElement("tr");
+                         //var mytd1 = document.createElement("td");
+                         var mytd2 = document.createElement("td");
+                         var mytd3 = document.createElement("td");
+                         var mytd4 = document.createElement("td");
+                         mybody.appendChild(mytr);
+                         //mytd1.innerHTML = data[ i].id;
+                        // mytr.appendChild(mytd1);
+                         mytd2.innerHTML = data[i].regdata;
+                         mytr.appendChild(mytd2);
+                         mytd3.innerHTML = "<a href='/test/blogindex/show.html?id="+data[i].id+"'>"+data[i].title+"</a>" ;
+                         mytr.appendChild(mytd3);
+                         mytd4.innerHTML=data[i].name;
+                         mytr.appendChild(mytd4);
+                     }
+
+
+                 },"json");
+         if(name=="")
+                 $("#tr1").append("没有登录的访问用户");
+         $("#login").click(function () {
+            $(".loginout").css("display","block");
+            // $(".loginout").show();
+
+         });
+         $(".loginout>input").click(function () {
+             if($(this).attr("id")=="submit1")
+             {
+                 //document.cookie{}
+                 window.location.href='/test/login/login.html';
+             }
+             if($(this).attr("id")=="submit2")
+                     $(".loginout").hide('fast');
+
+         })
+
+
+     })
+    </script>
+</head>
+<body>
+<div class="top">
+    <div class="top-left">
+        <a href="/test/blogindex/blogindex.html" class="l-href">个人主页</a>
+        <a href="/test/blogindex/index.html" class="l-href">我的blog</a>
+        <a href="/test/blogindex/indexb.html" class="l-href">精华blog</a>
+        <a href="/test/blogindex/test.php" class="l-href">照片墙</a>
+        <a  class="l-href" id="login">登出</a>
+    </div>
+    <div class="top-right">
+        <a href="#" class="l-href">好友blog—cjj</a>
+        <a href="#" class="l-href">好友blog-yyp</a>
+        <a href="" class="l-href">联系我们</a>
+    </div>
+
+</div>
+<div class="index">
+    <hr>
+    <div class="loginout"><strong>确认登出？</strong><br>
+      <input type="submit" name="submit1" id="submit1" value="确认登出">
+      <input type="submit" name="submit2" id="submit2" value="取消">
+  </div>
+    <div class="text-display">
+        <table width="200" border="0" align="center">
+            <caption>
+                blog列表
+            </caption>
+            <thead>
+            <tr id="tr">
+                <td align="center">date</td>
+                <td align="center">title</td>
+                <td align="center">name</td>
+            </tr>
+            </thead>
+            <tbody id="tr1">
+            </tbody>
+        </table>
+        <div class="text-conl">
+            <p id="p"></p>
+            <p id="p1"></p>
+
+            <p id="div1"></p>
+        </div>
+    </div>
+
+</div>
+<div class="text-down"></div>
+</body>
+</html>

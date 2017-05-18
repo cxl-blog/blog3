@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改bolg</title>
+    <script type="text/javascript" src="/test/js/jqurey.js"></script>
+    <script type="text/javascript" src="/test/js/function.js"></script>
+    <script type="text/javascript">
+        var xmlhttp=null;
+        var date=null;
+        //var page=null;
+        //var pagesize=3;
+        //var offset=0;
+        function GetQueryString(name)//查询url中参数
+        {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return decodeURIComponent(r[2]); return null;
+        }
+        function strreplace(ment) {
+            //var reg=new RegExp("[\n\r]","g"); //创建正则RegExp对象
+            return ment.replace(/[\n]/g,"<br>");
+            //var reg2=new RegExp(" ","g");
+            //return reg1.replace(reg2,"&nbsp;");
+
+
+        }
+        var name=null;
+
+        //if(page<=1)
+        //      page=1;
+        function getCookie(c_name)//取出登录时建立的令牌
+        {
+            if (document.cookie.length > 0) {
+                c_start = document.cookie.indexOf(c_name + "=");
+                if (c_start != -1) {
+                    c_start = c_start + c_name.length + 1;
+                    c_end = document.cookie.indexOf(";", c_start);
+                    if (c_end == -1)
+                        c_end = document.cookie.length;
+                    return decodeURIComponent(document.cookie.substring(c_start, c_end))
+                }
+            }
+            return "";
+        }
+
+            function createXmlHttpRequest()
+        {
+            if(window.ActiveXObject)
+            {
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            else if(window.XMLHttpRequest)
+            {
+                xmlhttp=new XMLHttpRequest();
+            }
+        }
+        function send_request(){
+
+            createXmlHttpRequest();
+            //var name1=getCookie('loadname');
+            //alert(name1);
+            id=GetQueryString("id");
+            var url="/test/blogindex/show.php?id="+id;
+            xmlhttp.onreadystatechange=processRequest;
+            xmlhttp.open("GET",url,true);
+            xmlhttp.send("null");
+        }
+        function processRequest(){
+            if(xmlhttp.readyState==4)
+            {
+                if (xmlhttp.status == 200) {
+                    //var arr=xmlhttp.responseText;
+                    var date1=new Date();
+                    var month=date1.getMonth()+1;
+                    date=date1.getFullYear()+"-"+month+"-"+date1.getDate();
+                    var contacts = JSON.parse(xmlhttp.responseText);
+
+                    document.getElementById("id").innerHTML=contacts[0].id;
+                    document.getElementById("regdata").innerHTML="修改时间："+date;
+                    document.getElementById("name").innerHTML="name:"+getCookie('loadname');
+                    document.getElementById("title").value=contacts[0].title;
+                    document.getElementById("body").value=strreplace(contacts[0].body);
+
+
+                    }
+            }
+        }
+        function updata_request() {
+            createXmlHttpRequest();
+            id=GetQueryString("id");
+
+            var date1=new Date();
+            var month=date1.getMonth()+1;
+            var date2=date1.getFullYear()+"-"+month+"-"+date1.getDate();
+            var url="/test/blogindex/updata.php?id="+id+"&regdata="+date2+"&name="+getCookie('loadname')+"&title="+document.getElementById("title").value+"&body="+document.getElementById("body").value;
+            xmlhttp.onreadystatechange=updataRequest;
+            xmlhttp.open("GET",url,true);
+            xmlhttp.send("null");
+
+        }
+        function updataRequest() {
+            if(xmlhttp.readyState==4)
+            {
+                if (xmlhttp.status == 200) {
+                    //var name=getCookie('username');
+                    if(xmlhttp.responseText!=null)
+                    {
+                        alert("修改成功");
+                        window.location.href="/test/blogindex/index.html?name="+getCookie('loadname');
+                    }
+                    else
+                    {
+                        alert("修改失败，无法预料的错误");
+                        return false;
+                    }
+                }
+                }
+
+        }
+        $(document).ready(function () {
+            //登出模块
+            $("#login").click(function () {
+                $(".loginout").css("display","block");
+                // $(".loginout").show("fast");
+
+            });
+            $(".loginout>input").click(function () {
+                if($(this).attr("id")=="submit3")
+                {
+                    window.location.href='/test/login/login.html';
+                }
+                if($(this).attr("id")=="submit4")
+                    $(".loginout").hide('fast');
+
+            })
+
+
+        })
+        </script>
+    <link href="/test/css/ys2.css" rel="stylesheet" type="text/css">
+</head>
+<body onload="send_request()">
+<div class="top">
+    <div class="top-left">
+        <a href="">个人主页</a>
+        <a href="/test/blogindex/index.html">我的blog</a>
+        <a href="/test/blogindex/indexb.html">精华blog</a>
+        <a href="/test/blogindex/test.php">照片墙</a>
+        <a id="login">登出</a>
+    </div>
+    <div class="top-right">
+        <a href="#" class="l-href">好友blog—cjj</a>
+        <a href="#" class="l-href">好友blog-yyp</a>
+        <a href="" class="l-href">联系我们</a>
+    </div>
+
+</div>
+<div class="index">
+    <hr>
+    <div class="loginout"><strong>确认登出？</strong><br>
+        <input type="submit" name="submit1" id="submit3" value="确认登出">
+        <input type="submit" name="submit2" id="submit4" value="取消">
+    </div>
+<div class="text-edit">
+<div class="text-display">
+<table width="100%" height="95%" border="1" bordercolor="#000000">
+  <tr>
+    <td colspan="3">blogID:
+      <span id="id"></span></td>
+    </tr>
+  <tr>
+    <td width="25%"><span id="name"></span></td>
+    <td width="50%"><span id="regdata"></span></td>
+    <td width="5%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>  
+    
+    title:
+   </td>
+    <td><label for="title"></label> 
+    <input name="title" type="text" id="title"></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td colspan="3"><label for="body"></label> 
+  <textarea name="body" id="body" cols="80%" rows="10"></textarea></td>
+    </tr>
+  <tr>
+    <td colspan="3"><input type="submit" name="submit" id="submit" value="更改" onclick="updata_request()"></td>
+    </tr>
+</table>
+</div>
+    </div>
+    <div class="text-down"><hr>111</div>
+    </div>
+</body>
+</html>

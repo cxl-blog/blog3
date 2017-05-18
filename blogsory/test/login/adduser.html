@@ -1,0 +1,126 @@
+<!DOCTYPE html >
+<html >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>创建新用户</title>
+    <script type="text/javascript" src="/test/js/jqurey.js"></script>
+    <script type="text/javascript">
+var xmlhttp=null;
+        var contacts=null;
+        function createXmlHttpRequest()
+        {
+            if(window.ActiveXObject)
+            {
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            else if(window.XMLHttpRequest)
+            {
+                xmlhttp=new XMLHttpRequest();
+            }
+        }
+        function send_request(){
+
+            createXmlHttpRequest();
+            var url="load.php";
+            xmlhttp.onreadystatechange=processRequest;
+            xmlhttp.open("GET",url,true);
+            xmlhttp.send("null");
+        }
+        function processRequest() {
+
+            if (xmlhttp.readyState == 4) {
+                if (xmlhttp.status == 200) {
+                    //var arr=xmlhttp.responseText;
+                    contacts = JSON.parse(xmlhttp.responseText);
+
+                }
+            }
+        }
+        function request()
+        {
+            var span1=document.getElementById("span");
+            var name = document.getElementById("name").value;
+            var b=0;
+            for (var i = 0; i < contacts.length; i++)
+            {
+                if (name == contacts[i].name)
+                {
+                    span1.innerHTML = "该用户名已被注册！";
+                    b++;
+                }
+            }
+            if ((name!="") && b==0)
+                span1.innerHTML = "用户名可用";
+        }
+        function addRequest(data1,textstatus)
+        {
+
+                        if (data1!=null ) {
+                            alert("注册成功，返回登录界面");
+                            window.location.href="login.html";
+                        }
+                        else
+                        {
+                            alert("新增失败，无法预料的错误");
+                        }
+        }
+        $(document).ready(function () {
+            $("#span").css("color","#f00");
+            $("#name").click(function () {
+                $("#name").val("");
+                $("#span").html("");
+            });
+            $("#submit1").on("click",function () {
+                if($("#name").val()=="")
+                        alert("用户名不能为空");
+                if(($("#name").val!=="")&&($("#password").val()!=="")) {
+                    $.get("adduser.php", {
+                        name: $("#name").val(),
+                        password: $("#password").val()
+                    }, function (data, textstatus) {
+                        addRequest(data, textstatus);
+                    })
+                }
+            })
+
+
+        });
+    </script>
+    <link href="/test/css/adduser.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+.ys1 {
+	color: #F00;
+}
+
+</style>
+</head>
+<body onLoad="send_request()">
+<div class="top">
+    <div class="top-left">
+    </div>
+    <div class="top-right">
+        <a href="" class="l-href">联系我们</a>
+    </div>
+</div>
+
+<div class="index">
+    <div id="apDiv1"><form id="form1" name="form1" method="post" action="">
+    <p id="a"> <span class="ys1">新用户注册</span></p>
+    <p>
+        用户名：
+        <label for="name"></label>
+        <input name="name" type="text" id="name"  onChange="request()"   />
+<span id="span"></span>
+    </p>
+    <p>密码：        &nbsp;&nbsp;&nbsp;
+    <label for="password"></label>
+        <input type="text" name="password" id="password" />
+    </p>
+    <p>
+        <input type="button" name="submit1" id="submit1" value="注册"/>
+    </p>
+</form></div>
+
+    </div>
+</body>
+</html>

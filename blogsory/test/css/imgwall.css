@@ -1,0 +1,120 @@
+.top{
+    position: absolute;
+    text-align: left;
+    top: 0px;
+    height: 50px;
+    width: 100%;
+    left:0px;
+    background-color: #0033FF;
+}
+.top-left{
+    position:absolute;
+    font-size: 22px;
+    left:20px;
+    width:49%;
+    top:0px;
+    height:40px;
+    padding-top:10px;
+    text-decoration: none;
+    background-color: #0033FF;
+}
+
+.top-right {
+    position: absolute;
+    text-align: right;
+    text-decoration: none;
+    font-size: 22px;
+    color: aliceblue;
+    top: 0px;
+    width: 49%;
+    height: 40px;
+    left: 50%;
+    padding-top:10px;
+    background-color: #0033FF;
+}
+a{
+    text-decoration: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: aliceblue;
+    background-color: #0033FF;
+
+}
+#apDiv1 {
+	position:absolute;
+	left:10px;
+	top:60px;
+	width:200px;
+	height:80%;
+	background-color:#FFF;
+	z-index:2;
+	overflow: hidden;
+	display: block;
+}
+#apDiv1 p{
+	text-align:left;
+	font-size:22px;
+	font-weight: bold;
+	}
+#apDiv2 {
+	position:absolute;
+	left:220px;
+	top:60px;
+	width:auto;
+	height:auto;
+	z-index:1;
+}
+
+.index{
+    text-align: center;
+    position:absolute;
+    top:50px;
+    left:0px;
+    width: 100%;
+    height:95%;
+
+}
+.loginout{
+    position:absolute;
+    display: none;
+    top:200px;
+    left:650px;
+    height:250px;
+    width:300px;
+    background-color:#FFF;
+    z-index:3;
+    text-align:center;
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    border-top-color: #333;
+    border-right-color: #333;
+    border-bottom-color: #333;
+    border-left-color: #333;
+}
+.loginout strong{
+    position:absolute;
+    width:100%;
+    text-align:center;
+    left:0px;
+    font-size:32px;
+    padding-top:30px;}
+.loginout #submit3{
+    position:absolute;
+    height:50px;
+    width:100%;
+    left:0px;
+    margin-top:80px;
+    font-size:20px;
+    background-color: #66FFFF;
+}
+.loginout #submit4 {
+    position: absolute;
+    background-color: #66FFFF;
+    height: 50px;
+    width: 100%;
+    left: 0px;
+    margin-top: 150px;
+    font-size: 20px;
+}

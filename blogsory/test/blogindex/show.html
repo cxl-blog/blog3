@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查看blog</title>
+    <script type="text/javascript" src="/test/js/jqurey.js"></script>
+    <script type="text/javascript" src="/test/js/function.js"></script>
+    <script type="text/javascript">
+        var xmlhttp=null;
+        var xmlhttp2=null;
+        var xmlhttp3=null;
+        var page=null;
+        var pagesize=3;
+        var offset=0;
+        var name=null;
+        var id=null;
+        var uid=null;
+        var blogname=null;
+        function GetQueryString(name)
+        {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return decodeURIComponent(r[2]); return null;
+        }
+        function strreplace(ment) {
+            var reg=new RegExp(" ","g"); //创建正则RegExp对象
+            var reg1= ment.replace(reg,"&nbsp;");
+            //return reg1;
+            //var reg2=new RegExp("\n\r","g");
+            return reg1.replace(/\n\r/g,"</br>");
+
+
+        }
+        function createXmlHttpRequest(a)
+        {
+            if(window.ActiveXObject)
+            {
+                a=new ActiveXObject("Microsoft.XMLHTTP");
+                return a;
+            }
+            else if(window.XMLHttpRequest)
+            {
+                a=new XMLHttpRequest();
+                return a;
+            }
+        }
+        function send_request(){
+            xmlhttp=createXmlHttpRequest(xmlhttp);
+            id=GetQueryString("id");
+            var url="/test/blogindex/show.php?id="+id;
+            xmlhttp.onreadystatechange=processRequest;
+            xmlhttp.open("GET",url,true);
+            xmlhttp.send("null");
+            document.getElementById("span").innerHTML="评论:";
+
+            xmlhttp2=createXmlHttpRequest(xmlhttp2);
+            var url2="/test/comments/comment.php?id="+id;
+            xmlhttp2.onreadystatechange=comment_Request;
+            xmlhttp2.open("GET",url2,true);
+            xmlhttp2.send("null");
+
+        }
+        function processRequest(){
+            if(xmlhttp.readyState==4)
+                if (xmlhttp.status == 200) {
+                    var contacts = JSON.parse(xmlhttp.responseText);
+                    blogname=getCookie('loadname');
+                    var id=document.getElementById("id");
+                    var regdata=document.getElementById("regdata");
+                    var name=document.getElementById("name");
+                    var title=document.getElementById("title");
+                    var body=document.getElementById("body");
+                    id.innerHTML="id:"+contacts[0].id;
+                    regdata.innerHTML="regdata:"+contacts[0].regdata;
+                    name.innerHTML="name:"+contacts[0].name;
+                    title.innerHTML=contacts[0].title;
+                    body.innerHTML=strreplace(contacts[0].body);
+                    if(blogname!=contacts[0].name) {
+                        $("#div3").append(
+                                "<p>添加新评论：</p> <p> " +
+                                "<span id='loadname'></span>" +
+                                " <input type='checkbox' name='chick' id='chick'> " +
+                                "<label for='chick' class='ys2'>是否匿名</label></p> " +
+                                "<label for='comment'></label>" +
+                                " <textarea name='comment' id='comment' cols='45' rows='5'></textarea>" +
+                                " <input type='submit' name='submit' id='submit' value='评论' onclick='addcomment_request()'>");
+                        $(".ys2").css("color", "red");
+                        $("#loadname").html(getCookie('loadname'));
+                    }
+
+                    
+                }
+        }
+        function addcomment_request() {   //添加评论
+
+            xmlhttp3=createXmlHttpRequest(xmlhttp3);
+            id=GetQueryString("id");
+            var name=getCookie('loadname');
+            var date1=new Date();
+            var month=date1.getMonth()+1;
+            var regdata=date1.getFullYear()+"-"+month+"-"+date1.getDate();
+            var remark=document.getElementById("comment").value;
+            if(document.getElementById("chick").checked==true)
+                var url1="/test/comments/addcomment.php?id="+id+"&name="+"***"+"&regdata="+regdata+"&remark="+remark;
+            //alert(url1);
+            else
+                url1="/test/comments/addcomment.php?id="+id+"&name="+name+"&regdata="+regdata+"&remark="+remark;
+            xmlhttp3.onreadystatechange=addcomment_Request;
+            xmlhttp3.open("GET",url1,true);
+            xmlhttp3.send("null");
+
+
+
+        }
+        function addcomment_Request() {
+            if(xmlhttp3.readyState==4){
+                if (xmlhttp3.status == 200)
+                {
+                    //alert(xmlhttp3.responseText);
+                    if(xmlhttp3.responseText!=null)
+                    {
+                        alert("评论成功");
+                        window.location.href="/test/blogindex/show.html?id="+id;//返回上一页并且刷新
+                    }
+                    else
+                            alert("评论失败");
+
+                }
+            }
+
+
+        }
+        function comment_Request() {///显示评论
+
+
+            if(xmlhttp2.readyState==4)
+                if (xmlhttp2.status == 200) {
+                    //var arr=xmlhttp.responseText;
+                    //alert(xmlhttp2.responseText);
+                    var contacts = JSON.parse(xmlhttp2.responseText);
+                    var div=document.getElementById("div1");
+                    var p=document.createElement("p");
+                   // var name=document.createElement("span");
+                    //var regdata=document.createElement("span");
+                    //var body=document.createElement("p");
+                    div.appendChild(p);
+                    //alert(xmlhttp2.responseText);
+                    if(contacts.length=="")
+                    p.innerHTML="无评论"+"<hr>";
+                    else {
+                        //if(contacts.length>pagesize) {
+                        pagevlan(contacts.length);
+                        for (var i = 0; i < pagesize; i++) {
+                            var tr1 = document.createElement("p");
+                            var tr2 = document.createElement("p");
+                            var tr3 = document.createElement("p");
+                            //alert(contacts[offset+i].id);
+                            //var id2 = contacts[offset + i].id;
+                            div.appendChild(tr1);
+                            tr1.innerHTML = "name:" + contacts[offset + i].name;
+                            div.appendChild(tr2);
+                            tr2.innerHTML = "regdata:" + contacts[offset + i].regdata;
+                            div.appendChild(tr3);
+                            tr3.innerHTML = "body"+ contacts[offset + i].remark;
+                            $("#div1").append("<input type='button' id='" + contacts[offset+i].id + "' class='ys3' value='删除评论' ><hr>&nbsp;&nbsp;&nbsp;");
+
+                        }
+                    }
+                }
+        }
+        function delete_comment() {   //删除评论
+
+            xmlhttp4=createXmlHttpRequest(xmlhttp4);
+
+            var  url1="/test/comments/deletecomment.php?id="+uid;
+            xmlhttp3.onreadystatechange=delete_Comment;
+            xmlhttp3.open("GET",url1,true);
+            xmlhttp3.send("null");
+
+
+
+        }
+        function delete_Comment() {
+            if (xmlhttp4.readyState == 4) {
+                if (xmlhttp4.status == 200) {
+                   // alert(xmlhttp4.responseText);
+                    if (xmlhttp4.responseText != null) {
+                        alert("删除评论成功");
+                        window.location.href = "/test/blogindex/show.html?id=" + id;//返回上一页并且刷新
+                    }
+                    else
+                        alert("删除失败");
+
+                }
+            }
+        }
+        function getCookie(c_name)//取出登录时建立的令牌
+        {
+            if (document.cookie.length > 0) {
+                c_start = document.cookie.indexOf(c_name + "=");
+                if (c_start != -1) {
+                    c_start = c_start + c_name.length + 1;
+                    c_end = document.cookie.indexOf(";", c_start);
+                    if (c_end == -1)
+                        c_end = document.cookie.length;
+                    return decodeURIComponent(document.cookie.substring(c_start, c_end))
+                }
+            }
+            return "";
+        }
+        function pagevlan( pagenum) {//分页
+            page=GetQueryString("page");
+            name=GetQueryString("name");
+            if(page==null)
+                page=1;
+            if(page<=1)
+                page=1;
+            var page1=page;
+            //var pagesize=1;
+            //var page=1;
+            offset=(page-1)*pagesize;
+            //page++;
+            //var pageid=page;
+            var page_list=page-1;
+            // var a=++page;
+            var page_ne=++page1;
+            var page_last=Math.ceil(pagenum/pagesize);
+            var div=document.getElementById("div2");
+            var tr=document.createElement("tr");
+            var span1=document.createElement("td");
+            var span2=document.createElement("td");
+            var span3=document.createElement("td");
+            var span4=document.createElement("td");
+            div.appendChild(tr);
+            tr.appendChild(span1);
+            var f=">首页";
+            var s=">上一页";
+            var x=">下一页";
+            var m=">末页";
+            var url = "<a  href=?id="+id+"&page=1";
+            var url1 = "<a  href=?id="+id+"&page=";
+            span1.innerHTML="共有"+page_last+"页&nbsp;"+page+"/"+page_last+url+f+"</a>&nbsp;";
+            if(page_list>=1) {
+                tr.appendChild(span2);
+                span2.innerHTML = url1 + page_list + s + "</a>&nbsp;";
+            }
+            if(page_ne<=page_last) {
+                tr.appendChild(span3);
+                span3.innerHTML = url1 + page_ne + x + "</a>&nbsp;";
+            }
+            //div.append("<a  href=?page="+page_next+">下一页</a>&nbsp;&nbsp;");
+            //div.append("<a  href=?page="+page_last+">首页</a>&nbsp;&nbsp;")
+            tr.appendChild(span4);
+            span4.innerHTML = url1 + page_last + m + "</a>";
+
+
+        }
+        $(document).ready(function () {//token是否为cxl  添加评论区域
+
+
+            $("#div1").on("click",".ys3",function () {
+                 //$(".ys3").on("click",function () {
+
+                     var $chick = $(this).attr("id");
+                     //alert($chick);
+                     $.get("/test/comments/deletecomment.php", {id:$(this).attr("id")}, function (data, textstatus) {
+                        // alert(data);
+                         if (data != "") {
+                             var $id=GetQueryString("id");
+                             alert("删除评论成功！");
+                             window.location.href = '/test/blogindex/show.html?id=' + $id;
+                         }
+
+
+                   //  });
+                     //alert("1");
+
+
+                 });
+
+
+
+            });
+            //登出模块
+            $("#login").click(function () {
+                $(".loginout").css("display","block");
+                // $(".loginout").show("fast");
+
+            });
+            $(".loginout>input").click(function () {
+                if($(this).attr("id")=="submit1")
+                {
+                    window.location.href='/test/login/login.html';
+                }
+                if($(this).attr("id")=="submit2")
+                    $(".loginout").hide('fast');
+
+            })
+        });
+
+
+        </script>
+    <link href="../css/ys4.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+.ys1 {
+	color: #30F;
+	font-size: 24px;    
+}
+.ys2 {
+	font-size: 12px;
+	color: #C00;
+}
+</style>
+</head>
+<body onload="send_request()">
+<div class="top">
+    <div class="top-left">
+        <a href="/test/blogindex/blogindex.html">个人主页</a>
+        <a href="/test/blogindex/index.html">我的blog</a>
+        <a href="/test/blogindex/indexb.html">精华blog</a>
+        <a href="/test/blogindex/test.php">照片墙</a>
+        <a id="login">登出</a>
+    </div>
+    <div class="top-right">
+        <a href="#" class="l-href">好友blog—站点</a>
+        <a href="#" class="l-href">好友blog-站点</a>
+        <a href="" class="l-href">联系我们</a>
+    </div>
+
+</div>
+<div class="index">
+    <hr>
+    <div class="loginout"><strong>确认登出？</strong><br>
+        <input type="submit" name="submit1" id="submit1" value="确认登出">
+        <input type="submit" name="submit2" id="submit2" value="取消">
+    </div>
+    <div class="blogtext">
+<table width="100%" height="100%" border="1">
+  <tr>
+    <td height="51" colspan="2"><p id="id"></p></td>
+    </tr>
+  <tr>
+    <td width="26%" height="32"><p id="name"></p></td>
+    <td><p id="regdata"></p></td>
+    </tr>
+  <tr>
+    <td height="42">主题：</td>
+    <td><p  id="title"></td>
+    </tr>
+  
+  <tr>
+    <td colspan="2" align="left" valign="top"><blockquote>
+      <p id="body">&nbsp;</p>
+    </blockquote></td>
+    </tr>
+</table>
+
+</div>
+    <div class="addcomment">
+        <div id="div3"></div>
+    </div>
+<div class="comment">
+<span class="ys1" id="span"></span>
+<div id="div1"></div>
+<div id="div2"></div>
+</div>
+    <div class="text-down"></div>
+</div>
+</body>
+</html>

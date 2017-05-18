@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<title>Title</title>
+<style type="text/css">
+#apDiv1 {
+	position:absolute;
+	left:152px;
+	top:24px;
+	width:496px;
+	height:338px;
+	z-index:1;
+    overflow-y:auto;
+}
+#apDiv2 {
+	position:absolute;
+	left:660px;
+	top:26px;
+	width:146px;
+	height:465px;
+	z-index:2;
+	overflow: auto;
+}
+#apDiv3 {
+	position:absolute;
+	left:91px;
+	top:498px;
+	width:590px;
+	height:60px;
+	z-index:3;
+	overflow:  scroll;
+}
+#apDiv4 {
+	position:absolute;
+	left:17px;
+	top:24px;
+	width:122px;
+	height:466px;
+	z-index:4;
+	overflow:  auto;
+}
+
+
+.span{
+	color: #F00;
+}
+</style><script type="text/javascript" src="js/jqurey.js"></script>
+
+
+
+   <script type="text/javascript">
+        setInterval(cookies, 5000);//定时刷新
+        var xmlhttp=null;
+        var n=null;//定义发送消息内容触发
+        var date2=new Date();
+        //var date="global";
+        var date=date2.getMonth()+"/"+date2.getDay()+" "+date2.getHours()+":"+date2.getMinutes()+":"+date2.getSeconds()+":"+date2.getMilliseconds();
+        function createtime() {
+
+
+        }
+        function createXmlHttpRequest()
+        {
+            if(window.ActiveXObject)
+            {
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            else if(window.XMLHttpRequest)
+            {
+                xmlhttp=new XMLHttpRequest();
+            }
+        }
+        function GetQueryString(loadname) {
+            var reg = new RegExp("(^|&)" + loadname + "=([^&]*)(&|$)","i");//正则表达式
+            var r = window.location.search.substr(1).match(reg);
+            if (r!=null) return decodeURIComponent(r[2]);
+            return null;
+        }
+        /*var sname = GetQueryString("name");
+        if(sname!=null)
+        {
+            var sname_ = decodeURIComponent(sname);
+            alert(sname_);
+        }*/
+
+
+        function send_request(){
+                var sname=GetQueryString("loadname");
+                var body=document.getElementById("body").value;
+                //var date1=new Date();
+                //var date="global";
+                //date=date1.getMonth()+"/"+date1.getDay()+" "+date1.getHours()+":"+date1.getMinutes()+":"+date1.getSeconds()+":"+date1.getMilliseconds();
+                n++;
+                createXmlHttpRequest();
+                var url = "talk.php?body="+body+"&name="+sname+"&date="+date+"&n="+n;
+                xmlhttp.onreadystatechange = processRequest;
+                xmlhttp.open("GET", url, true);
+                xmlhttp.send(null);
+
+        }
+        function processRequest()
+        {
+
+            //var talk=1;
+            //var talk=2;
+            var div1=document.getElementById("apDiv1");
+            var div2=document.getElementById("apDiv2");
+            //var div3=document.getElementById("apDiv3");
+            var div4=document.getElementById("apDiv4");
+            var body=document.getElementById("body").value;
+            //if(myname!=""&&mypassword!="") {
+
+            if (xmlhttp.readyState == 4) {
+                if (xmlhttp.status == 200) {
+                    //var arr=xmlhttp.responseText;
+                   // alert(xmlhttp.responseText);
+
+                    //var contact = JSON.parse(xmlhttp.responseText);
+                    //var date1=new Date();
+                    //var  date="global";
+                   // date=date1.getMonth()+"/"+date1.getDay()+" "+date1.getHours()+":"+date1.getMinutes()+":"+date1.getSeconds()+":"+date1.getMilliseconds();
+                      var sname=GetQueryString("loadname");
+                   // for(var i=0;i<contact.length;i++)
+
+                    //{
+                        //alert(xmlhttp.responseText);
+                        var mytalk=document.createElement("p");
+                        //var othertalk=document.createElement("p");
+                        div1.appendChild(mytalk);
+                        mytalk.innerHTML=sname+":"+body;
+                       // div1.appendChild(othertalk);
+                        //othertalk.innerHTML="ta"+xmlhttp.responseText;
+                    //}
+
+                }
+            }
+        }
+        function getCookie(c_name)
+        {
+            if (document.cookie.length>0)
+            {
+                c_start=document.cookie.indexOf(c_name + "=");
+                if (c_start!=-1)
+                {
+                    c_start=c_start + c_name.length+1;
+                    c_end=document.cookie.indexOf(";",c_start);
+                    if (c_end==-1)
+                        c_end=document.cookie.length;
+                    return decodeURIComponent(document.cookie.substring(c_start,c_end))
+                }
+            }
+            return "";
+        }
+        function cookies() {
+            var session=getCookie('n');
+            if(session>n)
+            {
+                n=session;
+                refresh();
+            }
+
+        }
+
+       function refresh()
+       {
+            createXmlHttpRequest();
+            var url="talkload.php";
+            xmlhttp.onreadystatechange=refresh_proce;
+            xmlhttp.open("GET",url,true);
+            xmlhttp.send(null);
+       }
+        function refresh_proce()
+        {
+            if (xmlhttp.readyState == 4)
+            {
+                if (xmlhttp.status == 200)
+                {
+                    var div1=document.getElementById("apDiv1");
+                    //alert(xmlhttp.responseText);
+                    var contact = JSON.parse(xmlhttp.responseText);
+                    //var date3=new Date();
+                    //var date="global";
+                    //date=date3.getMonth()+"/"+date3.getDay()+" "+date3.getHours()+":"+date3.getMinutes()+":"+date3.getSeconds()+":"+date3.getMilliseconds();
+                    for(var i=0;i<contact.length;i++)
+                    {
+
+                        //
+                        //$("button").css("c")
+
+                        $(document).ready(function () {$("span").css("color","#f00")
+
+                        });
+                        var p1=document.createElement("p");
+                       var other = document.createElement("span");
+                        div1.appendChild(p1);
+                        p1.appendChild(other);
+                        //var p1="<p class=\"span\">";
+                        //div1.append(contact[i].name+":"+contact[i].remark+"</p>");
+                        //other.css("color: #F00");
+
+                            other.innerHTML = contact[i].name+":"+contact[i].remark;
+                    }
+                }
+
+            }
+        }
+
+
+
+    </script>
+</head>
+<body>
+<div id="apDiv1"></div>
+<div id="apDiv2"></div>
+<table width="802" height="486" border="1">
+  <tr>
+    <th width="129" rowspan="2" scope="col">&nbsp;</th>
+    <th width="501" height="348" bgcolor="#CCCCCC" scope="col">&nbsp;</th>
+    <th width="150" rowspan="2" scope="col">&nbsp;</th>
+  </tr>
+  <tr>
+    <td><p>
+    <label for="body"></label>
+      <textarea name="body" id="body" cols="75" rows="5"></textarea>
+      </p>
+      <p>
+        <input type="submit" name="submit" id="submit" value="提交" onClick="send_request()">
+    </p></td>
+  </tr>
+</table>
+
+
+<div id="apDiv4"></div>
+</body>
+</html>

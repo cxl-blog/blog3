@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>删除blog</title>
+    <script type="text/javascript" src="/test/js/jqurey.js"></script>
+    <script type="text/javascript" src="/test/js/function.js"></script>
+    <script  type="text/javascript">
+        $(document).ready(function () {
+            var $id=GetQueryString('id');
+            $("body").append("<p>是否删除id为"+$id+"的blog？</p>");
+            $("body").append("<input type='button' id='button1' value='确定' onclick='send_request()'>")
+
+        });
+
+        var xmlhttp=null;
+
+        function createXmlHttpRequest()
+        {
+            if(window.ActiveXObject)
+            {
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            else if(window.XMLHttpRequest)
+            {
+                xmlhttp=new XMLHttpRequest();
+            }
+        }
+        function send_request(){
+
+            //var name=getCookie('loadname');
+            //alert(name);
+
+            createXmlHttpRequest();
+            var url="/test/blogindex/delete.php?id="+GetQueryString('id');
+            xmlhttp.onreadystatechange=processRequest;
+            xmlhttp.open("GET",url,true);
+            xmlhttp.send("null");
+
+        }
+        function processRequest(){
+            if(xmlhttp.readyState==4)
+                if (xmlhttp.status == 200) {
+                    if(xmlhttp.responseText!=null)
+                    {
+                        alert("删除成功，返回主页");
+                        window.location.href="/test/blogindex/index.html?name="+getCookie("loadname");
+                    }
+                }
+                }
+        </script>
+</head>
+<body>
+
+
+</body>
+</html>
