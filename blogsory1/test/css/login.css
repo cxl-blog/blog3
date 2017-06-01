@@ -1,0 +1,178 @@
+.top{
+	position: absolute;
+	text-align: left;
+	top: 0px;
+	height: 50px;
+	width: 100%;
+	left:0px;
+	background-color: #0033FF;
+}
+.top-left{
+	position:absolute;
+	font-size: 22px;
+	left:20px;
+	width:49%;
+	top:0px;
+	height:40px;
+	padding-top:10px;
+	text-decoration: none;
+	background-color: #0033FF;
+}
+
+.top-right {
+	position: absolute;
+	text-align: right;
+	text-decoration: none;
+	font-size: 22px;
+	color: aliceblue;
+	top: 0px;
+	width: 49%;
+	height: 40px;
+	left: 50%;
+	padding-top:10px;
+	background-color: #0033FF;
+}
+.xh{
+	position: absolute;
+	top:6%;
+}
+.l-href{
+    text-decoration: none;
+    font-size: 18px;
+    color: aliceblue;
+    background-color: #0033FF;
+}
+.login-text{
+	vertical-align: middle;
+	top: 250px;
+	left:40px;
+	position:absolute;
+	display: block;
+	visibility: visible;
+
+
+}
+.login-text table {
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+}
+#apDiv2 {
+	position:absolute;
+	left:780px;
+	top:18%;
+	width:720px;
+	height:400px;
+	overflow: hidden;
+	z-index:1;
+	visibility: visible;
+	padding:0;
+}
+#ul{
+	position:absolute;
+    top:0px;
+	float:left;
+	width:100%;
+	margin:0px;
+	
+	}
+	#ul li{
+		float:left;
+		left:0px;
+		top:0px;
+		height:400px;
+		margin:0px;}
+	
+a{
+	cursor: pointer;
+}
+hr{
+	width: 100%;
+	float: left;
+}
+li{
+	list-style:none;
+	}
+img{
+	position:relative;
+	width:100%;
+	height:400px;
+	visibility: visible;
+	}
+body{
+	background-image: url(../images/1.jpg);
+}
+
+.num{
+	position:absolute;
+	width:95%;
+	top:90%;
+	height:5%;
+	left:10px;
+	visibility: visible;
+	
+	}
+	#apDiv2 .num li{
+		    float: left;
+    color: #FF7300;
+    text-align: center;
+    line-height: 16px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    overflow: hidden;
+    margin: 3px 1px;
+    border: 1px solid #FF7300;
+    background-color: #fff;
+	list-style:none;
+		}
+		#apDiv2 .num li.on{
+	color: #fff;
+    line-height: 21px;
+    width: 21px;
+    height: 21px;
+    font-size: 16px;
+    margin: 0 1px;
+    border: 0;
+    background-color: #FF7300;
+    font-weight: bold;}
+.text-down{
+	position: absolute;
+	left: 0px;
+	top: 100%;
+	width:100%;
+	height:150px;
+	font-size: 16px;
+	color: aliceblue;
+	text-align: center;
+	visibility: visible;
+}
+.display{
+    position:absolute;
+    background-image: url(../images/2.jpg);
+    display: none;
+}
+.index{
+	text-align: left;
+	position:absolute;
+	top:50px;
+	left:0px;
+	width: 100%;
+	height:95%;
+
+}
+.body{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	visibility: visible;
+}
+.index #span1 {
+	font-family: "方正姚体";
+	font-size: 36px;
+	font-style: italic;
+	text-decoration: blink;
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>删除blog</title>
+    <script type="text/javascript" src="/test/js/jqurey.js"></script>
+    <script type="text/javascript" src="/test/js/function.js"></script>
+    <link href="/test/css/deleteblog.css" rel="stylesheet" type="text/css" >
+    <script  type="text/javascript">
+        $(document).ready(function () {
+            var $id=GetQueryString('id');
+            $(".deleteblog>strong").append("是否删除该blog？");
+
+        });
+
+        var xmlhttp=null;
+
+        function createXmlHttpRequest()
+        {
+            if(window.ActiveXObject)
+            {
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            else if(window.XMLHttpRequest)
+            {
+                xmlhttp=new XMLHttpRequest();
+            }
+        }
+        function send_request(){
+
+            //var name=getCookie('loadname');
+            //alert(name);
+
+            createXmlHttpRequest();
+            var url="/test/blogindex/delete.php?id="+GetQueryString('id');
+            xmlhttp.onreadystatechange=processRequest;
+            xmlhttp.open("GET",url,true);
+            xmlhttp.send("null");
+
+        }
+        function processRequest(){
+            if(xmlhttp.readyState==4)
+                if (xmlhttp.status == 200) {
+                    if(xmlhttp.responseText!=null)
+                    {
+                        alert("删除成功，返回主页");
+                        window.location.href="/test/blogindex/index.html";
+                    }
+                }
+                }
+        $(document).ready(function () {
+            //登出模块
+            $("#login").click(function () {
+                $(".loginout").css("display","block");
+                // $(".loginout").show("fast");
+
+            });
+            $(".loginout>input").click(function () {
+                if($(this).attr("id")=="submit3")
+                {
+                    window.location.href='/test/login/login.html';
+                }
+                if($(this).attr("id")=="submit4")
+                    $(".loginout").hide('fast');
+
+            });
+            //删除模块
+            $("#submit2").click(function () {
+                window.location.href="/test/blogindex/index.html";
+
+            });
+            $("#submit1").click(function () {
+                send_request();
+
+            })
+
+        })
+        </script>
+</head>
+<body>
+<div class="top">
+    <div class="top-left">
+        <a href="/test/blogindex/blogindex.html" class="l-href">个人主页</a>
+        <a href="/test/blogindex/index.html" class="l-href">我的blog</a>
+        <a href="/test/blogindex/indexb.html" class="l-href">精华blog</a>
+        <a href="/test/blogindex/imgwall.html" class="l-href">照片墙</a>
+        <a  class="l-href" id="login">登出</a>
+    </div>
+    <div class="top-right">
+        <a href="#" class="l-href">好友blog—cjj</a>
+        <a href="#" class="l-href">好友blog-yyp</a>
+        <a href="mailto:755194700@qq.com" class="l-href">联系我们</a>
+    </div>
+
+</div>
+<div class="index">
+
+    <hr><blockquote>
+    <span id="dis">Delete blog</span>
+</blockquote>
+    <div class="loginout"><strong>确认登出？</strong><br>
+        <input type="submit" name="submit1" id="submit3" value="确认登出">
+        <input type="submit" name="submit2" id="submit4" value="取消">
+    </div>
+
+    <div class="deleteblog">
+    <strong></strong><br>
+    <input type="submit" name="submit1" id="submit1" value="确认删除">
+    <input type="submit" name="submit2" id="submit2" value="取消">
+</div>
+</div>
+</body>
+</html>

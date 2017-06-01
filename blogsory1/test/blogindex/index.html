@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>myblog</title>
+    <script type="text/javascript" src="/test/js/jqurey.js"></script>
+    <script type="text/javascript">
+        var xmlhttp=null;
+        var page=null;
+        var pagesize=3;
+        var offset=0;
+        function GetQueryString(name)
+        {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return  decodeURIComponent(r[2]); return null;
+        }
+        var name=null;
+
+        //if(page<=1)
+          //      page=1;
+
+        function createXmlHttpRequest()
+        {
+            if(window.ActiveXObject)
+            {
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            else if(window.XMLHttpRequest)
+            {
+                xmlhttp=new XMLHttpRequest();
+            }
+        }
+        function send_request(){
+
+            //var name=getCookie('loadname');
+            //alert(name);
+            createXmlHttpRequest();
+            var url="/test/blogindex/mysql.php";
+            xmlhttp.onreadystatechange=processRequest;
+            xmlhttp.open("GET",url,true);
+            xmlhttp.send("null");
+
+        }
+        function processRequest(){
+            if(xmlhttp.readyState==4)
+            if (xmlhttp.status == 200) {
+                //alert(xmlhttp.responseText);
+                name=getCookie('loadname');
+                var p = document.getElementById("p1");
+                var url4 = "<a href=/test/blogindex/add.html?name=";
+                if(name!="")
+                p.innerHTML = url4 + name + ">添加新blog</a>";
+                var $td1=$("<td align='center'>执行</td>");
+                $("#tr").append($td1);
+                var contacts = JSON.parse(xmlhttp.responseText);
+                if(name=="")
+                    $("#p").append("<sp>没有登录，请登录！</sp>").css("color","red");
+                if(contacts.length==0&&name!="")
+                    $("#p").append("<sp>还无blog，请添加</sp>").css("color","red");
+                var mybody = document.getElementById("tr1");
+                if(contacts.length!=0) {
+                    pagevlan(contacts.length);
+                    for (var i = 0; i < pagesize; i++) {
+
+                        var mytr = document.createElement("tr");
+                        var mytd1 = document.createElement("td");
+                        var mytd2 = document.createElement("td");
+                        var mytd3 = document.createElement("td");
+
+                        var num = contacts[offset + i].id + ">";
+                        var dele = "删除";
+                        var edir = "修改";
+                        var url = "<a href=/test/blogindex/show.html?id=";
+                        var url1 = "<a href=/test/blogindex/delete.html?id=";
+                        var url2 = "<a href=/test/blogindex/edit.html?id=";
+
+                        mybody.appendChild(mytr);
+                        mytd1.innerHTML = contacts[offset + i].id;
+                        mytr.appendChild(mytd1);
+
+                        mytd2.innerHTML = contacts[offset + i].regdata;
+                        mytr.appendChild(mytd2);
+
+                        mytd3.innerHTML = url + num + contacts[offset + i].title + "</a>";
+                        mytr.appendChild(mytd3);
+                        var mytd4 = document.createElement("td");
+                        mytd4.innerHTML = url1 + num + dele + "</a>&nbsp;  &nbsp;" + url2 + num + edir + "</a>";
+                        mytr.appendChild(mytd4);
+
+                    }
+                }
+            }
+        }
+        function pagevlan( pagenum) {
+            page=GetQueryString("page");
+            name=getCookie("loadname");
+            if(page==null)
+                    page=1;
+            if(page<=1)
+                page=1;
+            var page1=page;
+            offset=(page-1)*pagesize;
+            var page_list=page-1;
+            var page_ne=++page1;
+            var page_last=Math.ceil(pagenum/pagesize);
+            var div=document.getElementById("div1");
+            var tr=document.createElement("p");
+            var span1=document.createElement("span");
+            var span2=document.createElement("span");
+            var span3=document.createElement("span");
+            var span4=document.createElement("span");
+            div.appendChild(tr);
+            tr.appendChild(span1);
+            var f=">首页";
+            var s=">上一页";
+            var x=">下一页";
+            var m=">末页";
+            var url = "<a  href=?name="+name+"&page=1";
+            var url1 = "<a  href=?name="+name+"&page=";
+            span1.innerHTML="共有"+page_last+"&nbsp;"+page+"/"+page_last+url+f+"&nbsp;</a>&nbsp;";
+            if(page_list>=1) {
+                tr.appendChild(span2);
+                span2.innerHTML = url1 + page_list + s + "</a>&nbsp;";
+            }
+            if(page_ne<=page_last) {
+                tr.appendChild(span3);
+                span3.innerHTML = url1 + page_ne + x + "</a>&nbsp;";
+            }
+            tr.appendChild(span4);
+            span4.innerHTML = url1 + page_last + m + "</a>&nbsp;";
+
+
+        }
+        function getCookie(c_name)
+        {
+            if (document.cookie.length>0)
+            {
+                c_start=document.cookie.indexOf(c_name + "=");
+                if (c_start!=-1)
+                {
+                    c_start=c_start + c_name.length+1;
+                    c_end=document.cookie.indexOf(";",c_start);
+                    if (c_end==-1)
+                        c_end=document.cookie.length;
+                    return decodeURIComponent(document.cookie.substring(c_start,c_end))
+                }
+            }
+            return "";
+        }
+        $(document).ready(function () {
+            var name=getCookie('loadname');
+            //判断是否为登录用户改变导航栏
+            if(name=="") {
+                $(".top-left").html("请登录！");
+                $(".top-right").html("");
+            }
+            $(".top-left").click(function () {
+                if($(this).html()=="请登录！")
+                    window.location.href='/test/login/login.html';
+
+            });
+            //登出模块
+            $("#login").click(function () {
+                $(".loginout").css("display","block");
+                // $(".loginout").show("fast");
+
+            });
+            $(".loginout>input").click(function () {
+                if($(this).attr("id")=="submit3")
+                {
+                    window.location.href='/test/login/login.html';
+                }
+                if($(this).attr("id")=="submit4")
+                    $(".loginout").hide('fast');
+
+            })
+
+            //shanchu1mokuai1
+            $(".deleteblog > strong").append("是否删除该博客文章");
+
+
+        })
+
+
+    </script>
+    <link href="/test/css/ys1.css" rel="stylesheet" type="text/css">
+
+<style type="text/css">
+#apDiv1 {
+	position:absolute;
+	left:13px;
+	top:100px;
+	width:620px;
+	height:65px;
+	z-index:1;
+}
+</style>
+</head>
+<body  onLoad="send_request()">
+<div class="top">
+    <div class="top-left">
+        <a href="/test/blogindex/blogindex.html" class="l-href">个人主页</a>
+        <a href="/test/blogindex/index.html" class="l-href">我的blog</a>
+        <a href="/test/blogindex/indexb.html" class="l-href">精华blog</a>
+        <a href="/test/blogindex/imgwall.html" class="l-href">照片墙</a>
+        <a  class="l-href" id="login">登出</a>
+    </div>
+    <div class="top-right">
+        <a href="#" class="l-href">好友blog—cjj</a>
+        <a href="#" class="l-href">好友blog-yyp</a>
+        <a href="mailto:755194700@qq.com" class="l-href">联系我们</a>
+    </div>
+
+</div>
+<div class="index">
+    
+    <hr><blockquote>
+      <span id="dis">My blog</span>
+    </blockquote>
+    <div class="loginout"><strong>确认登出？</strong><br>
+        <input type="submit" name="submit1" id="submit3" value="确认登出">
+        <input type="submit" name="submit2" id="submit4" value="取消">
+    </div>
+
+<div class="text-display">
+<table width="200" border="0" align="center">
+<caption>
+    blog列表
+  </caption>
+    <thead>
+  <tr id="tr">
+    <td align="center">id</td>
+    <td align="center">date</td>
+    <td align="center">title</td>
+
+  </tr>
+  </thead>
+    <tbody id="tr1">
+    </tbody>
+</table>
+<div class="text-conl">
+    <p id="p"></p>
+<p id="p1"></p>
+
+<p id="div1"></p>
+</div>
+</div>
+
+</div>
+<div class="text-down"></div>
+</body>
+</html>
